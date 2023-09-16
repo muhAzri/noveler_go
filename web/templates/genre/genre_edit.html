@@ -1,0 +1,46 @@
+{{ define "title" }}
+<title>Genre Edit - Noveler Admin</title>
+{{ end }}
+
+{{ define "heading" }}
+<h3>Genre</h3>
+{{ end }}
+
+{{ define "content" }}
+
+
+
+<section class="section">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">
+                Edit Genre
+            </h5>
+        </div>
+        <div class="card-body">
+            
+            <form class="form form-horizontal" action="/genre/{{ .genre.ID }}/edit" method="POST">
+                <div class="form-body">
+                    <div class="row">
+                        <div class="form-group has-icon-left">
+                            <label for="first-name-icon">Genre Name</label>
+                            <div class="position-relative">
+                                <input type="text" name="name" class="form-control" placeholder="Input Genre Name" id="first-name-icon" value="{{ .genre.Name }}">
+                                <div class="form-control-icon">
+                                    <i class="bi bi-person"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                            <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+
+{{ end }}

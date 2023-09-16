@@ -12,6 +12,7 @@ type Service interface {
 	UpdateGenre(inputID FindByIDInput, input CreateGenreInput) (Genre, error)
 	DeleteGenre(inputID FindByIDInput) error
 	GetAllGenres() ([]Genre, error)
+	GetGenreByID(inputID FindByIDInput) (Genre, error)
 }
 
 type service struct {
@@ -79,4 +80,14 @@ func (s *service) GetAllGenres() ([]Genre, error) {
 	}
 
 	return genres, nil
+}
+
+func (s *service) GetGenreByID(inputID FindByIDInput) (Genre, error) {
+	genre, err := s.repository.GetByID(inputID.ID)
+
+	if err != nil {
+		return genre, err
+	}
+
+	return genre, nil
 }

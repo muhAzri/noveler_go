@@ -49,6 +49,11 @@ func main() {
 	// CMS routes
 	router.GET("/", genreAdminHandler.Index)
 	router.GET("/genre", genreAdminHandler.Index)
+	router.GET("/genre/new", genreAdminHandler.New)
+	router.POST("/genre/new", genreAdminHandler.Create)
+	router.POST("/genre/:id/delete", genreAdminHandler.Delete)
+	router.GET("/genre/:id/edit", genreAdminHandler.Edit)
+	router.POST("/genre/:id/edit", genreAdminHandler.Update)
 	router.GET("/novel", genreAdminHandler.NovelIndex)
 
 	router.Run(":8080")
