@@ -61,13 +61,13 @@ func (r *repository) DeleteByID(ID string) error {
 }
 
 func (r *repository) GetAll() ([]Genre, error) {
-	var genres []Genre
+    var genres []Genre
 
-	err := r.db.Find(&genres).Error
+    err := r.db.Order("updated_at desc").Find(&genres).Error
 
-	if err != nil {
-		return genres, err
-	}
+    if err != nil {
+        return genres, err
+    }
 
-	return genres, nil
+    return genres, nil
 }
