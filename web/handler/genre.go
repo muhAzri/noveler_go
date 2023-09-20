@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"noveler_go/genre"
 
@@ -22,7 +21,7 @@ func (h *genreHandler) Index(c *gin.Context) {
 	genres, err := h.genreService.GetAllGenres()
 
 	if err != nil {
-		fmt.Println("HANDLE ERROR")
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
 		return
 	}
 
@@ -40,16 +39,14 @@ func (h *genreHandler) Create(c *gin.Context) {
 
 	err := c.ShouldBind(&input)
 	if err != nil {
-		// c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": err.Error()})
-		fmt.Println("HANDLE ERROR")
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
 		return
 	}
 
 	_, err = h.genreService.CreateGenre(input)
 
 	if err != nil {
-		// c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": err.Error()})
-		fmt.Println("HANDLE ERROR")
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
 		return
 	}
 
@@ -62,14 +59,14 @@ func (h *genreHandler) Delete(c *gin.Context) {
 
 	err := c.ShouldBindUri(&input)
 	if err != nil {
-		fmt.Println("HANDLE ERROR")
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
 		return
 	}
 
 	err = h.genreService.DeleteGenre(input)
 
 	if err != nil {
-		fmt.Println("HANDLE ERROR")
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
 		return
 	}
 
@@ -82,19 +79,19 @@ func (h *genreHandler) Edit(c *gin.Context) {
 	err := c.ShouldBindUri(&input)
 
 	if err != nil {
-		fmt.Println("HANDLE ERROR")
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
 		return
 	}
 
 	genre, err := h.genreService.GetGenreByID(input)
 
 	if err != nil {
-		fmt.Println("HANDLE ERROR")
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
 		return
 	}
 
 	if genre.ID == uuid.Nil {
-		fmt.Println("HANDLE ERROR")
+		c.HTML(http.StatusInternalServerError, "404.html", gin.H{"error": err.Error()})
 		return
 	}
 
@@ -109,31 +106,23 @@ func (h *genreHandler) Update(c *gin.Context) {
 
 	err := c.ShouldBindUri(&inputId)
 	if err != nil {
-		// c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": err.Error()})
-		fmt.Println("HANDLE ERROR")
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
 		return
 	}
 
 	err = c.ShouldBind(&input)
 	if err != nil {
-		// c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": err.Error()})
-		fmt.Println("HANDLE ERROR")
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
 		return
 	}
 
 	_, err = h.genreService.UpdateGenre(inputId, input)
 
 	if err != nil {
-		// c.HTML(http.StatusInternalServerError, "error.html", gin.H{"error": err.Error()})
-		fmt.Println("HANDLE ERROR")
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
 		return
 	}
 
 	c.Redirect(http.StatusFound, "/genre")
 
-}
-
-func (h *genreHandler) NovelIndex(c *gin.Context) {
-
-	c.HTML(http.StatusOK, "novel_index.html", nil)
 }

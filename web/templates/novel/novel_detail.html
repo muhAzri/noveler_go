@@ -1,0 +1,63 @@
+{{ define "title" }}
+<title>Novel Detail - Noveler Admin</title>
+
+{{ end }}
+
+{{ define "heading" }}
+<h3>Novel Detail</h3>
+{{ end }}
+
+{{ define "content" }}
+
+<section class="section">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">
+                Novel Detail
+            </h5>
+            <div class="buttons">
+                <a href="/novel/{{ .novel.ID }}/edit" class="btn icon icon-left btn-primary"><i data-feather="edit"></i> Edit Novel</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <img src="{{ .novel.CoverImage }}" alt="{{ .novel.Title }}" class="img-thumbnail" width="400">
+                </div>
+                <div class="col-md-8">
+                    <h3>{{ .novel.Title }}</h3>
+                    <p><strong>Description:</strong> {{ .novel.Description }}</p>
+                    <p><strong>Status:</strong> {{ .novel.Status }}</p>
+                    <p><strong>Author:</strong> {{ .novel.Author }}</p>
+                    <p><strong>Rating:</strong> {{ .novel.Rating }}</p>
+                    <p><strong>Genres:</strong>
+                        {{ range .genres }}
+                            <span class="badge bg-light-info">{{ .Name }}</span>
+                        {{ end }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+       
+       
+
+
+</section>
+
+<section class="section">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">
+                Chapter List
+            </h5>
+        </div>
+        <div class="card-body">
+        
+        </div>
+    </div>
+   
+</section>
+
+{{ end}}
