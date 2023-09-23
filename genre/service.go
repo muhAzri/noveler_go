@@ -13,6 +13,7 @@ type Service interface {
 	DeleteGenre(inputID FindByIDInput) error
 	GetAllGenres() ([]Genre, error)
 	GetGenreByID(inputID FindByIDInput) (Genre, error)
+	GetGenreByIDS(ids []string) ([]Genre, error)
 }
 
 type service struct {
@@ -27,8 +28,8 @@ func (s *service) CreateGenre(input CreateGenreInput) (Genre, error) {
 	genre := Genre{
 		ID:        uuid.New(),
 		Name:      input.Name,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
 	}
 
 	newGenre, err := s.repository.Create(genre)
@@ -51,7 +52,7 @@ func (s *service) UpdateGenre(inputID FindByIDInput, input CreateGenreInput) (Ge
 	}
 
 	genre.Name = input.Name
-	genre.UpdatedAt = time.Now()
+	genre.UpdatedAt = time.Now().UTC()
 
 	updatedGenre, err := s.repository.Update(genre)
 
@@ -90,4 +91,19 @@ func (s *service) GetGenreByID(inputID FindByIDInput) (Genre, error) {
 	}
 
 	return genre, nil
+}
+
+func (s *service) GetGenreByIDS(ids []string) ([]Genre, error) {
+	var genres []Genre
+
+	for _, id := range ids {
+		genre, err := s.repository.GetByID(id)
+		if err != nil {
+			return genres, err
+		}
+
+		genres = append(genres, genre)
+	}
+
+	return genres, nil
 }

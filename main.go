@@ -6,6 +6,7 @@ import (
 	"noveler_go/genre"
 	"noveler_go/handler"
 	"noveler_go/helper"
+	"noveler_go/novel"
 	"path/filepath"
 
 	webHandler "noveler_go/web/handler"
@@ -33,8 +34,13 @@ func main() {
 	genreService := genre.NewService(genreRepository)
 	genreHandler := handler.NewGenreHandler(genreService)
 
+	// Novel
+	novelRepository := novel.NewRepository(db)
+	novelService := novel.NewService(novelRepository)
+
 	//CMS Handler
 	genreAdminHandler := webHandler.NewGenreHandler(genreService)
+	novelAdminHandler := webHandler.NewNovelHandler(novelService, genreService)
 	router := gin.Default()
 
 	// Load HTML & Static Assets
@@ -47,14 +53,19 @@ func main() {
 	api.POST("/genre", genreHandler.CreateGenre)
 
 	// CMS routes
-	router.GET("/", genreAdminHandler.Index)
+	router.GET("/", novelAdminHandler.Index)
 	router.GET("/genre", genreAdminHandler.Index)
 	router.GET("/genre/new", genreAdminHandler.New)
 	router.POST("/genre/new", genreAdminHandler.Create)
 	router.POST("/genre/:id/delete", genreAdminHandler.Delete)
 	router.GET("/genre/:id/edit", genreAdminHandler.Edit)
 	router.POST("/genre/:id/edit", genreAdminHandler.Update)
-	router.GET("/novel", genreAdminHandler.NovelIndex)
+	router.GET("/novel", novelAdminHandler.Index)
+	router.GET("/novel/new", novelAdminHandler.New)
+	router.POST("/novel/create", novelAdminHandler.Create)
+	router.GET("/novel/:id", novelAdminHandler.Detail)
+	router.GET("/novel/:id/edit", novelAdminHandler.Edit)
+	router.POST("/novel/:id/edit", novelAdminHandler.Update)
 
 	router.Run(":8080")
 }

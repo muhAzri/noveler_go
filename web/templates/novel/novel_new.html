@@ -1,0 +1,107 @@
+{{ define "title" }}
+<title>Create Novel - Noveler Admin</title>
+<link rel="stylesheet" href="/assets/extensions/choices.js/public/assets/styles/choices.css">
+
+{{ end }}
+
+{{ define "heading" }}
+<h3>Create Novel</h3>
+{{ end }}
+
+{{ define "content" }}
+
+<section class="section">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">
+                New Novel
+            </h5>
+        </div>
+        <div class="card-body">
+
+            <form class="form form-horizontal" action="/novel/create" method="POST">
+                <div class="form-body">
+                    <div class="row">
+                        <div class="form-group has-icon-left">
+                            <label for="title">Title</label>
+                            <div class="position-relative">
+                                <input type="text" name="title" class="form-control" placeholder="Input Title" id="title" required>
+                                <div class="form-control-icon">
+                                    <i class="bi bi-file-text"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group has-icon-left">
+                            <label for="description">Description</label>
+                            <div class="position-relative">
+                                <textarea name="description" class="form-control" style="height: 200px; max-height: 800px;" placeholder="Input Description" id="description" required></textarea>
+                                <div class="form-control-icon">
+                                    <i class="bi bi-card-text"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group has-icon-left">
+                            <label for="cover_image">Cover Image URL</label>
+                            <div class="position-relative">
+                                <input type="text" name="cover_image" class="form-control" placeholder="Input Cover Image URL" id="cover_image" required>
+                                <div class="form-control-icon">
+                                    <i class="bi bi-image"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status</label>  
+                            <div class="input-group">
+                                <label class="input-group-text" for="inputGroupSelect01">Status</label>
+                                <select name="status" class="form-select" id="inputGroupSelect01" required>
+                                    <option value="ongoing">OnGoing</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="hiatus">Hiatus</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group has-icon-left">
+                            <label for="author">Author</label>
+                            <div class="position-relative">
+                                <input type="text" name="author" class="form-control" placeholder="Input Author" id="author" required>
+                                <div class="form-control-icon">
+                                    <i class="bi bi-person"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group has-icon-left">
+                            <label for="rating">Rating</label>
+                            <div class="position-relative">
+                                <input type="number" name="rating" class="form-control" placeholder="Input Rating" id="rating" max="5" min="1" required>
+                                <div class="form-control-icon">
+                                    <i class="bi bi-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                   
+                        <div class="form-group">
+                            <label for="status">Genres</label>  
+                            <select name="genre_ids" class="choices form-select multiple-remove" multiple="multiple">
+                                {{ range .genres }}
+                                 <option value="{{ .ID }}">{{ .Name }}</option>
+
+                                {{ end}}
+                            </select>
+                        </div>
+                      
+                        <div class="col-12 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary me-1 mb-1">Create Novel</button>
+                            <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+   
+<script src="/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
+<script src="/assets/static/js/pages/form-element-select.js"></script>
+{{ end }}

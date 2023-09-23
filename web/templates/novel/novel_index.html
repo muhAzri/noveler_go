@@ -1,11 +1,71 @@
 {{ define "title" }}
-    <title>Novel - Noveler Admin</title>
+<title>Novel - Noveler Admin</title>
 {{ end }}
 
 {{ define "heading" }}
-    <h3>Novel</h3>
+<h3>Novel</h3>
 {{ end }}
 
 {{ define "content" }}
-    <h4>Novel Content </h4>
+
+<link rel="stylesheet" href="/assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="/assets/compiled/css/table-datatable-jquery.css">
+
+
+<section class="section">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">
+                Novel List
+            </h5>
+            <div class="buttons">
+                <a href="/novel/new" class="btn icon icon-left btn-primary"><i data-feather="plus"></i> Add Novel</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table" id="table1">
+                    <thead>
+                        <tr>
+                            <th>Cover Image</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Status</th>
+                            <th>Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ range .novels }}
+                        <tr>
+                            <td><img src="{{ .CoverImage }}" width="140" alt="..." class="img-thumbnail"></td>
+                            <td>{{ .Title }}</td>
+                            <td>{{ .Author }}</td>
+                            <td><span class="badge bg-light-info">{{ .Status }}</span></td>
+                            <td> 
+                               <a href="/novel/{{ .ID }}" class="btn btn-primary">Detail</a>
+                            </td>
+                        </tr>
+                        {{ end }}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+<script src="/assets/extensions/jquery/jquery.min.js"></script>
+<script src="/assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+<script src="/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+<script>
+    jQuery(document).ready(function($) {
+        var table = $('#table1').DataTable({
+            "order": [],
+        });
+    });
+</script>
+
 {{ end }}
