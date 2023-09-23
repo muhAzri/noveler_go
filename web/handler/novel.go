@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"noveler_go/genre"
 	"noveler_go/novel"
@@ -86,8 +85,6 @@ func (h *novelHandler) Detail(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(novel)
-
 	genres, err := h.genreService.GetGenreByIDS(novel.GenreIDs)
 
 	if err != nil {
@@ -99,5 +96,77 @@ func (h *novelHandler) Detail(c *gin.Context) {
 		"novel":  novel,
 		"genres": genres,
 	})
+}
+
+func (h *novelHandler) Edit(c *gin.Context) {
+	var input novel.FindByIDInput
+
+	err := c.ShouldBindUri(&input)
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
+		return
+	}
+
+	genres, err := h.genreService.GetAllGenres()
+
+	if err != nil {
+		c.HTML(http.StatusOK, "500.html", gin.H{"error": err.Error()})
+		return
+	}
+
+	novel, err := h.novelService.GetNovelByID(input)
+
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
+		return
+	}
+
+	if novel.ID == uuid.Nil {
+		c.HTML(http.StatusInternalServerError, "404.html", gin.H{"error": err.Error()})
+		return
+	}
+
+	c.HTML(http.StatusOK, "novel_edit.html", gin.H{
+		"novel":  novel,
+		"genres": genres,
+	})
+}
+
+func (h *novelHandler) Update(c *gin.Context) {
+	var input novel.CreateNovelInput
+	var inputID novel.FindByIDInput
+
+	err := c.ShouldBind(&input)
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
+		return
+	}
+
+	err = c.ShouldBindUri(&inputID)
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
+		return
+	}
+
+	novel, err := h.novelService.GetNovelByID(inputID)
+
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
+		return
+	}
+
+	if novel.ID == uuid.Nil {
+		c.HTML(http.StatusInternalServerError, "404.html", gin.H{"error": err.Error()})
+		return
+	}
+
+	_, err = h.novelService.UpdateNovel(inputID, input)
+
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "500.html", gin.H{"error": err.Error()})
+		return
+	}
+
+	c.Redirect(http.StatusFound, "/novel")
 
 }

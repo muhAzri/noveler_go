@@ -64,6 +64,8 @@ func main() {
 	router.GET("/novel/new", novelAdminHandler.New)
 	router.POST("/novel/create", novelAdminHandler.Create)
 	router.GET("/novel/:id", novelAdminHandler.Detail)
+	router.GET("/novel/:id/edit", novelAdminHandler.Edit)
+	router.POST("/novel/:id/edit", novelAdminHandler.Update)
 
 	router.Run(":8080")
 }
