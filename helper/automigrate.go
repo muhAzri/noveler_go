@@ -2,6 +2,7 @@ package helper
 
 import (
 	"log"
+	"noveler_go/chapter"
 	"noveler_go/genre"
 	"noveler_go/novel"
 
@@ -17,6 +18,10 @@ func AutomigrateDatabase(db *gorm.DB) {
 	}
 
 	err = novel.AutoMigrate(db)
+	if err != nil {
+		log.Fatalf("Error migrating novel: %v", err)
+	}
+	err = chapter.AutoMigrate(db)
 	if err != nil {
 		log.Fatalf("Error migrating novel: %v", err)
 	}
