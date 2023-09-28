@@ -1,6 +1,7 @@
 package novel
 
 import (
+	"noveler_go/chapter"
 	"time"
 
 	"github.com/google/uuid"
@@ -17,9 +18,9 @@ type Novel struct {
 	Author      string         `gorm:"type:varchar(255)"`
 	Rating      int            `gorm:"type:bigint"`
 	GenreIDs    pq.StringArray `gorm:"type:text[]"`
-	// Chapters    []chapter.Chapter
-	CreatedAt time.Time `gorm:"type:timestamp"`
-	UpdatedAt time.Time `gorm:"type:timestamp"`
+	Chapters    []chapter.Chapter
+	CreatedAt   time.Time `gorm:"type:timestamp"`
+	UpdatedAt   time.Time `gorm:"type:timestamp"`
 }
 
 func AutoMigrate(db *gorm.DB) error {

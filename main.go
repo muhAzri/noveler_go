@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"noveler_go/chapter"
 	"noveler_go/genre"
 	"noveler_go/handler"
 	"noveler_go/helper"
@@ -38,15 +39,21 @@ func main() {
 	novelRepository := novel.NewRepository(db)
 	novelService := novel.NewService(novelRepository)
 
+	//Chapter
+	chapterRepository := chapter.NewRepository(db)
+	chapterService := chapter.NewService(chapterRepository)
+
 	//CMS Handler
 	genreAdminHandler := webHandler.NewGenreHandler(genreService)
 	novelAdminHandler := webHandler.NewNovelHandler(novelService, genreService)
+	chapterAdminHandler := webHandler.NewChapterHandler(chapterService)
 	router := gin.Default()
 
 	// Load HTML & Static Assets
 	router.LoadHTMLGlob("web/templates/**/*")
 	router.HTMLRender = loadTemplates("./web/templates")
 	router.Static("/assets", "./web/assets/")
+	router.Static("/static", "./static/")
 
 	//API Routes
 	api := router.Group("/api/v1")
@@ -66,6 +73,11 @@ func main() {
 	router.GET("/novel/:id", novelAdminHandler.Detail)
 	router.GET("/novel/:id/edit", novelAdminHandler.Edit)
 	router.POST("/novel/:id/edit", novelAdminHandler.Update)
+	router.GET("/chapter/:id/new", chapterAdminHandler.New)
+	router.POST("/chapter/:id/new", chapterAdminHandler.Create)
+	router.GET("/chapter/:id/edit", chapterAdminHandler.Edit)
+	router.POST("/chapter/:id/edit", chapterAdminHandler.Update)
+	router.DELETE("/chapter/:id/delete", chapterAdminHandler.Delete)
 
 	router.Run(":8080")
 }

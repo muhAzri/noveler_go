@@ -40,7 +40,7 @@ func (r *repository) Save(novel Novel) (Novel, error) {
 func (r *repository) GetByID(id string) (Novel, error) {
 	var novel Novel
 
-	err := r.db.Where("id = ?", id).Find(&novel).Preload("Genres").Error
+	err := r.db.Preload("Chapters").Where("id = ?", id).Find(&novel).Error
 
 	if err != nil {
 		return novel, err
