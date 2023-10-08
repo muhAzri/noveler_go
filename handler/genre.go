@@ -38,7 +38,7 @@ func (h *genreHandler) CreateGenre(c *gin.Context) {
 		return
 	}
 
-	response := helper.ApiResponse("Genre has been created", http.StatusOK, "success", newGenre, "")
+	response := helper.ApiResponse("Genre has been created", http.StatusOK, "success", newGenre, nil)
 	c.JSON(http.StatusOK, response)
 
 }

@@ -3,16 +3,22 @@ package main
 import (
 	"fmt"
 	"log"
+	"noveler_go/auth"
 	"noveler_go/chapter"
 	"noveler_go/genre"
 	"noveler_go/handler"
 	"noveler_go/helper"
+	"noveler_go/middleware"
 	"noveler_go/novel"
+	"noveler_go/user"
+	"os"
 	"path/filepath"
 
 	webHandler "noveler_go/web/handler"
 
 	"github.com/gin-contrib/multitemplate"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,7 +39,6 @@ func main() {
 
 	genreRepository := genre.NewRepository(db)
 	genreService := genre.NewService(genreRepository)
-	genreHandler := handler.NewGenreHandler(genreService)
 
 	// Novel
 	novelRepository := novel.NewRepository(db)
@@ -43,11 +48,27 @@ func main() {
 	chapterRepository := chapter.NewRepository(db)
 	chapterService := chapter.NewService(chapterRepository)
 
+	//User
+	userRepository := user.NewRepository(db)
+	userService := user.NewService(userRepository)
+
+	//JWT SERVICE
+	authService := auth.NewService()
+
+	//API HANDLER
+	genreHandler := handler.NewGenreHandler(genreService)
+	userHandler := handler.NewUserHandler(userService, authService)
+
 	//CMS Handler
 	genreAdminHandler := webHandler.NewGenreHandler(genreService)
 	novelAdminHandler := webHandler.NewNovelHandler(novelService, genreService)
 	chapterAdminHandler := webHandler.NewChapterHandler(chapterService)
+	sessionHandler := webHandler.NewSessionHandler(userService)
+
+	// ROUTES
 	router := gin.Default()
+	cookieStore := cookie.NewStore([]byte(os.Getenv("SECRET_KEY")))
+	router.Use(sessions.Sessions("session", cookieStore))
 
 	// Load HTML & Static Assets
 	router.LoadHTMLGlob("web/templates/**/*")
@@ -59,25 +80,36 @@ func main() {
 	api := router.Group("/api/v1")
 	api.POST("/genre", genreHandler.CreateGenre)
 
+	//User
+	api.POST("/register", userHandler.Register)
+	api.POST("/sessions", userHandler.Login)
+	api.POST("/sessions/refresh", userHandler.Refresh)
+
 	// CMS routes
-	router.GET("/", novelAdminHandler.Index)
-	router.GET("/genre", genreAdminHandler.Index)
-	router.GET("/genre/new", genreAdminHandler.New)
-	router.POST("/genre/new", genreAdminHandler.Create)
-	router.POST("/genre/:id/delete", genreAdminHandler.Delete)
-	router.GET("/genre/:id/edit", genreAdminHandler.Edit)
-	router.POST("/genre/:id/edit", genreAdminHandler.Update)
-	router.GET("/novel", novelAdminHandler.Index)
-	router.GET("/novel/new", novelAdminHandler.New)
-	router.POST("/novel/create", novelAdminHandler.Create)
-	router.GET("/novel/:id", novelAdminHandler.Detail)
-	router.GET("/novel/:id/edit", novelAdminHandler.Edit)
-	router.POST("/novel/:id/edit", novelAdminHandler.Update)
-	router.GET("/chapter/:id/new", chapterAdminHandler.New)
-	router.POST("/chapter/:id/new", chapterAdminHandler.Create)
-	router.GET("/chapter/:id/edit", chapterAdminHandler.Edit)
-	router.POST("/chapter/:id/edit", chapterAdminHandler.Update)
-	router.DELETE("/chapter/:id/delete", chapterAdminHandler.Delete)
+	router.GET("/", middleware.AuthAdminMiddleware(), novelAdminHandler.Index)
+
+	router.GET("/genre", middleware.AuthAdminMiddleware(), genreAdminHandler.Index)
+	router.GET("/genre/new", middleware.AuthAdminMiddleware(), genreAdminHandler.New)
+	router.POST("/genre/new", middleware.AuthAdminMiddleware(), genreAdminHandler.Create)
+	router.POST("/genre/:id/delete", middleware.AuthAdminMiddleware(), genreAdminHandler.Delete)
+	router.GET("/genre/:id/edit", middleware.AuthAdminMiddleware(), genreAdminHandler.Edit)
+	router.POST("/genre/:id/edit", middleware.AuthAdminMiddleware(), genreAdminHandler.Update)
+
+	router.GET("/novel", middleware.AuthAdminMiddleware(), novelAdminHandler.Index)
+	router.GET("/novel/new", middleware.AuthAdminMiddleware(), novelAdminHandler.New)
+	router.POST("/novel/create", middleware.AuthAdminMiddleware(), novelAdminHandler.Create)
+	router.GET("/novel/:id", middleware.AuthAdminMiddleware(), novelAdminHandler.Detail)
+	router.GET("/novel/:id/edit", middleware.AuthAdminMiddleware(), novelAdminHandler.Edit)
+	router.POST("/novel/:id/edit", middleware.AuthAdminMiddleware(), novelAdminHandler.Update)
+
+	router.GET("/chapter/:id/new", middleware.AuthAdminMiddleware(), chapterAdminHandler.New)
+	router.POST("/chapter/:id/new", middleware.AuthAdminMiddleware(), chapterAdminHandler.Create)
+	router.GET("/chapter/:id/edit", middleware.AuthAdminMiddleware(), chapterAdminHandler.Edit)
+	router.POST("/chapter/:id/edit", middleware.AuthAdminMiddleware(), chapterAdminHandler.Update)
+	router.DELETE("/chapter/:id/delete", middleware.AuthAdminMiddleware(), chapterAdminHandler.Delete)
+
+	router.GET("/login", sessionHandler.New)
+	router.POST("/session", sessionHandler.Create)
 
 	router.Run(":8080")
 }
