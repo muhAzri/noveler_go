@@ -58,6 +58,7 @@ func main() {
 	//API HANDLER
 	genreHandler := handler.NewGenreHandler(genreService)
 	userHandler := handler.NewUserHandler(userService, authService)
+	novelHandler := handler.NewNovelHandler(novelService)
 
 	//CMS Handler
 	genreAdminHandler := webHandler.NewGenreHandler(genreService)
@@ -79,6 +80,9 @@ func main() {
 	//API Routes
 	api := router.Group("/api/v1")
 	api.POST("/genre", genreHandler.CreateGenre)
+	api.GET("/novels/newest", middleware.AuthMiddleware(authService, userService), novelHandler.NewestNovel)
+	api.GET("/novels/updated", middleware.AuthMiddleware(authService, userService), novelHandler.UpdatedNovel)
+	api.GET("/novels/best", middleware.AuthMiddleware(authService, userService), novelHandler.BestNovel)
 
 	//User
 	api.POST("/register", userHandler.Register)

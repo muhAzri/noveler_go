@@ -7,6 +7,10 @@ type Repository interface {
 	Save(novel Novel) (Novel, error)
 	GetByID(ID string) (Novel, error)
 	GetAll() ([]Novel, error)
+	GetSortByRate() ([]Novel, error)
+	GetNewest() ([]Novel, error)
+	GetNewlyUpdated() ([]Novel, error)
+
 }
 
 type repository struct {
@@ -53,6 +57,42 @@ func (r *repository) GetAll() ([]Novel, error) {
 	var novels []Novel
 
 	err := r.db.Order("updated_at DESC").Find(&novels).Error
+
+	if err != nil {
+		return novels, err
+	}
+
+	return novels, nil
+}
+
+func (r *repository) GetSortByRate() ([]Novel, error) {
+	var novels []Novel
+
+	err := r.db.Order("rating ASC").Limit(10).Find(&novels).Error
+
+	if err != nil {
+		return novels, err
+	}
+
+	return novels, nil
+}
+
+func (r *repository) GetNewest() ([]Novel, error) {
+	var novels []Novel
+
+	err := r.db.Order("created_at DESC").Limit(10).Find(&novels).Error
+
+	if err != nil {
+		return novels, err
+	}
+
+	return novels, nil
+}
+
+func (r *repository) GetNewlyUpdated() ([]Novel, error){
+	var novels []Novel
+
+	err := r.db.Order("updated_at DESC").Limit(10).Find(&novels).Error
 
 	if err != nil {
 		return novels, err
