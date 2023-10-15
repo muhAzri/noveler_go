@@ -66,7 +66,7 @@ func (s *service) Login(input LoginInput) (User, error) {
 	}
 
 	if user.ID == uuid.Nil {
-		return user, errors.New("User not found")
+		return user, errors.New("email or password is incorrect")
 	}
 
 	saltBytes, err := hex.DecodeString(user.Salt)

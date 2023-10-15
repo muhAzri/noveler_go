@@ -12,6 +12,9 @@ type Service interface {
 	UpdateNovel(inputID FindByIDInput, input CreateNovelInput) (Novel, error)
 	GetAllNovel() ([]Novel, error)
 	GetNovelByID(inputID FindByIDInput) (Novel, error)
+	GetNewestNovel() ([]Novel, error)
+	GetNewlyUpdatedNovel() ([]Novel, error)
+	GetSortByRateNovel() ([]Novel, error)
 }
 
 type service struct {
@@ -93,4 +96,34 @@ func (s *service) GetNovelByID(inputID FindByIDInput) (Novel, error) {
 	}
 
 	return novel, nil
+}
+
+func (s *service) GetNewestNovel() ([]Novel, error) {
+	novels, err := s.repository.GetNewest()
+
+	if err != nil {
+		return novels, err
+	}
+
+	return novels, nil
+}
+
+func (s *service) GetNewlyUpdatedNovel() ([]Novel, error) {
+	novels, err := s.repository.GetNewlyUpdated()
+
+	if err != nil {
+		return novels, err
+	}
+
+	return novels, nil
+}
+
+func (s *service) GetSortByRateNovel() ([]Novel, error) {
+	novels, err := s.repository.GetSortByRate()
+
+	if err != nil {
+		return novels, err
+	}
+
+	return novels, nil
 }

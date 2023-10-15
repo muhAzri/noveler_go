@@ -10,3 +10,7 @@ type LoginInput struct {
 	Email    string `json:"email" form:"email" binding:"required,email"`
 	Password string `json:"password" form:"password" binding:"required"`
 }
+
+type RefreshInput struct {
+	RefreshToken string `json:"refresh_token"  binding:"required"`
+}

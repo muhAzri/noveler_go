@@ -92,10 +92,17 @@ func (h *userHandler) Login(c *gin.Context) {
 }
 
 func (h *userHandler) Refresh(c *gin.Context) {
+	var input user.RefreshInput
 
-	refreshToken := c.GetHeader("Authorization")
+	err := c.ShouldBindJSON(&input)
 
-	accessToken, err := h.authService.RefreshToken(refreshToken)
+	if err != nil {
+		response := helper.ApiResponse("Failed to refresh sessions", http.StatusBadRequest, "error", nil, err.Error())
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	accessToken, err := h.authService.RefreshToken(input.RefreshToken)
 
 	if err != nil {
 		response := helper.ApiResponse("Failed to refresh sessions", http.StatusUnauthorized, "error", nil, err.Error())
