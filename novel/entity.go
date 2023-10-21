@@ -16,7 +16,7 @@ type Novel struct {
 	CoverImage  string         `gorm:"type:text"`
 	Status      string         `gorm:"type:varchar(255)"`
 	Author      string         `gorm:"type:varchar(255)"`
-	Rating      int            `gorm:"type:bigint"`
+	Rating      float32            `gorm:"type:decimal(10,2)"`
 	GenreIDs    pq.StringArray `gorm:"type:text[]"`
 	Chapters    []chapter.Chapter
 	CreatedAt   time.Time `gorm:"type:timestamp"`

@@ -80,14 +80,19 @@ func main() {
 	//API Routes
 	api := router.Group("/api/v1")
 	api.POST("/genre", genreHandler.CreateGenre)
+
+	//Api Discover Screen Related
 	api.GET("/novels/newest", middleware.AuthMiddleware(authService, userService), novelHandler.NewestNovel)
 	api.GET("/novels/updated", middleware.AuthMiddleware(authService, userService), novelHandler.UpdatedNovel)
 	api.GET("/novels/best", middleware.AuthMiddleware(authService, userService), novelHandler.BestNovel)
 
-	//User
+	//API User Related
 	api.POST("/register", userHandler.Register)
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/sessions/refresh", userHandler.Refresh)
+
+	//Api Profile Screen Related
+	api.GET("/profile", middleware.AuthMiddleware(authService, userService), userHandler.GetProfile)
 
 	// CMS routes
 	router.GET("/", middleware.AuthAdminMiddleware(), novelAdminHandler.Index)
