@@ -19,7 +19,8 @@
                 Novel Detail
             </h5>
             <div class="buttons">
-                <a href="/novel/{{ .novel.ID }}/edit" class="btn icon icon-left btn-primary"><i data-feather="edit"></i> Edit Novel</a>
+                <a href="/novel/{{ .novel.ID }}/edit" class="btn icon icon-left btn-primary"><i data-feather="edit"></i>
+                    Edit Novel</a>
             </div>
         </div>
         <div class="card-body">
@@ -35,16 +36,16 @@
                     <p><strong>Rating:</strong> {{ .novel.Rating }}</p>
                     <p><strong>Genres:</strong>
                         {{ range .genres }}
-                            <span class="badge bg-light-info">{{ .Name }}</span>
+                        <span class="badge bg-light-info">{{ .Name }}</span>
                         {{ end }}
                     </p>
                 </div>
             </div>
         </div>
     </div>
-   
-       
-       
+
+
+
 
 
 </section>
@@ -58,12 +59,13 @@
                 Chapter List
             </h5>
             <div class="buttons">
-                <a href="/chapter/{{ .novel.ID }}/new" class="btn icon icon-left btn-primary"><i data-feather="plus"></i> Add Chapter</a>
+                <a href="/chapter/{{ .novel.ID }}/new" class="btn icon icon-left btn-primary"><i
+                        data-feather="plus"></i> Add Chapter</a>
             </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table" id="table1">
+                <table class="table" id="tablechapter">
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -76,7 +78,8 @@
                             <td class="col-8">{{ .Title }}</td>
                             <td class="col-2">
                                 <a href="/chapter/{{ .ID }}/edit" class="btn btn-primary">Edit</a>
-                                <a class="btn btn-danger delete-chapter" href="#danger" data-bs-toggle="modal" data-chapter-id="{{ .ID }}">Delete</a>
+                                <a class="btn btn-danger delete-chapter" href="#danger" data-bs-toggle="modal"
+                                    data-chapter-id="{{ .ID }}">Delete</a>
                             </td>
                         </tr>
                         {{ end }}
@@ -89,15 +92,14 @@
 
 
 <!-- START MODAL -->
-<div class="modal fade text-left" id="danger" tabindex="-1" role="dialog" aria-labelledby="myModalLabel120" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
-        role="document">
+<div class="modal fade text-left" id="danger" tabindex="-1" role="dialog" aria-labelledby="myModalLabel120"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header bg-danger">
                 <h5 class="modal-title white" id="myModalLabel120">Delete Chapter
                 </h5>
-                <button type="button" class="close" data-bs-dismiss="modal"
-                    aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <i data-feather="x"></i>
                 </button>
             </div>
@@ -105,8 +107,7 @@
                 Are you sure you want to delete this chapter? This action cannot be undone.
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light-secondary"
-                    data-bs-dismiss="modal">
+                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
                     <i class="bx bx-x d-block d-sm-none"></i>
                     <span class="d-none d-sm-block">Close</span>
                 </button>
@@ -124,7 +125,10 @@
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
     <div id="liveToast" class="toast fade hide" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
-            <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
+            <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
+                <rect width="100%" height="100%" fill="#007aff"></rect>
+            </svg>
             <strong class="me-auto">Toast</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
@@ -143,41 +147,53 @@
 <script src="/assets/static/js/pages/datatables.js"></script>
 <script src="/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script>
-     $(document).ready(function () {
-     function showToast(message) {
-         var toast = new bootstrap.Toast(document.getElementById('liveToast'));
-         var toastBody = document.querySelector('.toast-body');
-         toastBody.textContent = message;
-         toast.show();
-     }
- 
-     $(".delete-chapter").click(function () {
-         var chapterID = $(this).data("chapter-id");
- 
-         $("#acceptButton").data("chapter-id", chapterID);
- 
-         $("#danger").modal("show");
-     });
- 
-     $("#acceptButton").click(function () {
-         var genreID = $(this).data("chapter-id"); // Retrieve the stored genre ID
-         var deleteURL = "/chapter/" + genreID + "/delete";
- 
-         $.ajax({
-             type: "DELETE",
-             url: deleteURL,
-             success: function () {
-                 showToast("Chapter deleted successfully");
-                 setTimeout(() => {
-                   window.location.reload();
-                 }, 1000);
-             },
-             error: function () {
-                 console.error("Error deleting Chapters.");
-             }
-         });
-     });
- });
+    $(document).ready(function () {
+        function showToast(message) {
+            var toast = new bootstrap.Toast(document.getElementById('liveToast'));
+            var toastBody = document.querySelector('.toast-body');
+            toastBody.textContent = message;
+            toast.show();
+        }
+
+        $(".delete-chapter").click(function () {
+            var chapterID = $(this).data("chapter-id");
+
+            $("#acceptButton").data("chapter-id", chapterID);
+
+            $("#danger").modal("show");
+        });
+
+        $("#acceptButton").click(function () {
+            var genreID = $(this).data("chapter-id"); // Retrieve the stored genre ID
+            var deleteURL = "/chapter/" + genreID + "/delete";
+
+            $.ajax({
+                type: "DELETE",
+                url: deleteURL,
+                success: function () {
+                    showToast("Chapter deleted successfully");
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                },
+                error: function () {
+                    console.error("Error deleting Chapters.");
+                }
+            });
+        });
+    });
 </script>
+<script src="https://cdn.datatables.net/plug-ins/1.13.6/sorting/natural.js"></script>
+<script>
+    jQuery(document).ready(function ($) {
+        var table = $('#tablechapter').DataTable({
+            columnDefs: [
+                { type: 'natural', targets: 0 }
+            ]
+
+        });
+    });
+</script>
+
 
 {{ end }}

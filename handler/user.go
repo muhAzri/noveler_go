@@ -91,6 +91,7 @@ func (h *userHandler) Login(c *gin.Context) {
 
 }
 
+// API Endpoint POST /api/v1/sessions/refresh
 func (h *userHandler) Refresh(c *gin.Context) {
 	var input user.RefreshInput
 
@@ -113,5 +114,15 @@ func (h *userHandler) Refresh(c *gin.Context) {
 	formatter := auth.FormatToken(accessToken)
 
 	response := helper.ApiResponse("Session successfully refreshed", http.StatusOK, "success", formatter, nil)
+	c.JSON(http.StatusOK, response)
+}
+
+// API Endpoint GET /api/v1/profile
+func (h *userHandler) GetProfile(c *gin.Context) {
+	currentUser := c.MustGet("currentUser").(user.User)
+
+	formatter := user.FormatUser(currentUser, "", "")
+
+	response := helper.ApiResponse("Profile fetched successfully", http.StatusOK, "success", formatter, nil)
 	c.JSON(http.StatusOK, response)
 }

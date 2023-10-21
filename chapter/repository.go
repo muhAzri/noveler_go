@@ -33,7 +33,7 @@ func (r *repository) Create(chapter Chapter) (Chapter, error) {
 func (r *repository) FindByNovelID(offset, limit int, NovelID string) ([]Chapter, error) {
 	var chapters []Chapter
 
-	query := r.db.Where("novel_id = ?", NovelID).Order("created_at DESC").Offset(offset).Limit(limit).Find(&chapters)
+	query := r.db.Where("novel_id = ?", NovelID).Order("CAST(substring_index(title, ' ', -1) AS UNSIGNED)").Offset(offset).Limit(limit).Find(&chapters)
 
 	if query.Error != nil {
 		return chapters, query.Error
@@ -73,5 +73,3 @@ func (r *repository) Update(chapter Chapter) (Chapter, error) {
 
 	return chapter, nil
 }
-
-

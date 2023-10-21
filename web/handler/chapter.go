@@ -5,9 +5,7 @@ import (
 	"net/http"
 	"noveler_go/chapter"
 	"os"
-	"strconv"
 	"strings"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -45,12 +43,9 @@ func (h *chapterHandler) Create(c *gin.Context) {
 
 	title := strings.ReplaceAll(strings.ToLower(input.Title), " ", "-")
 
-	// Generate a unique value (timestamp or random string)
-	uniqueValue := strconv.FormatInt(time.Now().UnixNano(), 10)
-
 	// Concatenate the unique value to the file name
-	fileName := title + "-" + inputID.ID + "-" + uniqueValue + ".html"
-	filePath := "static/chapters/" + fileName
+	fileName := title + "-" + inputID.ID + ".html"
+	filePath := "/static/html/" + fileName
 
 	file, err := os.Create(filePath)
 	if err != nil {

@@ -41,8 +41,8 @@
                             <td>{{ .Title }}</td>
                             <td>{{ .Author }}</td>
                             <td><span class="badge bg-light-info">{{ .Status }}</span></td>
-                            <td> 
-                               <a href="/novel/{{ .ID }}" class="btn btn-primary">Detail</a>
+                            <td>
+                                <a href="/novel/{{ .ID }}" class="btn btn-primary">Detail</a>
                             </td>
                         </tr>
                         {{ end }}
@@ -61,7 +61,7 @@
 <script src="/assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
 <script src="/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script>
-    jQuery(document).ready(function($) {
+    jQuery(document).ready(function ($) {
         var table = $('#table1').DataTable({
             "order": [],
         });
