@@ -88,7 +88,7 @@ func (h *chapterHandler) Edit(c *gin.Context) {
 		return
 	}
 
-	htmlBytes, err := os.ReadFile(chapter.Content)
+	htmlBytes, err := os.ReadFile(chapter.Content[1:])
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return

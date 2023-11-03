@@ -10,6 +10,7 @@ import (
 type Service interface {
 	CreateChapter(inputId FindByIDInput, input CreateChapterInput) (Chapter, error)
 	GetPaginatedChapters(offset, limit int, NovelID string) ([]Chapter, error)
+	GetChaptersByID(inputID string) ([]Chapter, error)
 	GetByID(inputID FindByIDInput) (Chapter, error)
 	Delete(inputID FindByIDInput) error
 	UpdateChapter(inputID FindByIDInput, input CreateChapterInput) (Chapter, error)
@@ -103,4 +104,14 @@ func (s *service) UpdateChapter(inputID FindByIDInput, input CreateChapterInput)
 	}
 
 	return updatedChapter, nil
+}
+
+func (s *service) GetChaptersByID(inputID string) ([]Chapter, error) {
+	chapters, err := s.repository.FindsByID(inputID)
+
+	if err != nil {
+		return chapters, err
+	}
+
+	return chapters, nil
 }

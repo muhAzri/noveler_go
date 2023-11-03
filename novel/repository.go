@@ -1,6 +1,10 @@
 package novel
 
-import "gorm.io/gorm"
+import (
+	"math/rand"
+
+	"gorm.io/gorm"
+)
 
 type Repository interface {
 	Create(novel Novel) (Novel, error)
@@ -10,7 +14,7 @@ type Repository interface {
 	GetSortByRate() ([]Novel, error)
 	GetNewest() ([]Novel, error)
 	GetNewlyUpdated() ([]Novel, error)
-
+	GetRandomNovel() ([]Novel, error)
 }
 
 type repository struct {
@@ -89,7 +93,7 @@ func (r *repository) GetNewest() ([]Novel, error) {
 	return novels, nil
 }
 
-func (r *repository) GetNewlyUpdated() ([]Novel, error){
+func (r *repository) GetNewlyUpdated() ([]Novel, error) {
 	var novels []Novel
 
 	err := r.db.Order("updated_at DESC").Limit(10).Find(&novels).Error
@@ -99,4 +103,21 @@ func (r *repository) GetNewlyUpdated() ([]Novel, error){
 	}
 
 	return novels, nil
+}
+
+func (r *repository) GetRandomNovel() ([]Novel, error) {
+	var novels []Novel
+
+	err := r.db.Find(&novels).Error
+
+	if err != nil {
+		return novels, err
+	}
+
+	randomNovels := make([]Novel, 0, 10)
+	for i := 0; i < 10; i++ {
+		randomNovels = append(randomNovels, novels[rand.Intn(len(novels))])
+	}
+
+	return randomNovels, nil
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"noveler_go/auth"
+	"noveler_go/bookmark"
 	"noveler_go/chapter"
 	"noveler_go/genre"
 	"noveler_go/handler"
@@ -52,13 +53,18 @@ func main() {
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
 
+	//Bookmark
+	bookmarkRepository := bookmark.NewRepository(db)
+	bookmarkService := bookmark.NewService(bookmarkRepository)
+
 	//JWT SERVICE
 	authService := auth.NewService()
 
 	//API HANDLER
 	genreHandler := handler.NewGenreHandler(genreService)
 	userHandler := handler.NewUserHandler(userService, authService)
-	novelHandler := handler.NewNovelHandler(novelService)
+	novelHandler := handler.NewNovelHandler(novelService, bookmarkService, chapterService, genreService)
+	bookmarkHandler := handler.NewBookmarkHandler(bookmarkService)
 
 	//CMS Handler
 	genreAdminHandler := webHandler.NewGenreHandler(genreService)
@@ -82,9 +88,9 @@ func main() {
 	api.POST("/genre", genreHandler.CreateGenre)
 
 	//Api Discover Screen Related
-	api.GET("/novels/newest", middleware.AuthMiddleware(authService, userService), novelHandler.NewestNovel)
-	api.GET("/novels/updated", middleware.AuthMiddleware(authService, userService), novelHandler.UpdatedNovel)
-	api.GET("/novels/best", middleware.AuthMiddleware(authService, userService), novelHandler.BestNovel)
+	api.GET("/novel/newest", middleware.AuthMiddleware(authService, userService), novelHandler.NewestNovel)
+	api.GET("/novel/updated", middleware.AuthMiddleware(authService, userService), novelHandler.UpdatedNovel)
+	api.GET("/novel/best", middleware.AuthMiddleware(authService, userService), novelHandler.BestNovel)
 
 	//API User Related
 	api.POST("/register", userHandler.Register)
@@ -93,6 +99,14 @@ func main() {
 
 	//Api Profile Screen Related
 	api.GET("/profile", middleware.AuthMiddleware(authService, userService), userHandler.GetProfile)
+
+	//API Detail Novel Related
+	api.GET("/novel/:id/detail", middleware.AuthMiddleware(authService, userService), novelHandler.DetailNovel)
+	api.GET("/novel/recommended", middleware.AuthMiddleware(authService, userService), novelHandler.RecommendedNovel)
+
+	//BOOKMARK RELATED
+	api.POST("/novel/:id/bookmark", middleware.AuthMiddleware(authService, userService), bookmarkHandler.AddOrRemoveBookmark)
+	api.GET("/bookmark", middleware.AuthMiddleware(authService, userService), bookmarkHandler.GetUserBookmarks)
 
 	// CMS routes
 	router.GET("/", middleware.AuthAdminMiddleware(), novelAdminHandler.Index)

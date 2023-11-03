@@ -13,3 +13,14 @@ func FormatGenre(genre Genre) GenreFormatter {
 
 	return formatter
 }
+
+func FormatGenres(genres []Genre) []GenreFormatter {
+	genresFormatter := []GenreFormatter{}
+
+	for _, genre := range genres {
+		genreFormatter := FormatGenre(genre)
+		genresFormatter = append(genresFormatter, genreFormatter)
+	}
+
+	return genresFormatter
+}
