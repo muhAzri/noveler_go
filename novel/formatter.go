@@ -1,6 +1,8 @@
 package novel
 
-import "time"
+import (
+	"time"
+)
 
 type NovelFormatter struct {
 	ID         string    `json:"id"`
@@ -8,6 +10,21 @@ type NovelFormatter struct {
 	CoverImage string    `json:"cover_image"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
+}
+
+type DetailNovelFormatter struct {
+	ID            string      `json:"id"`
+	Title         string      `json:"title"`
+	Description   string      `json:"description"`
+	ChaptersCount int         `json:"chapters_count"`
+	CoverImage    string      `json:"cover_image"`
+	Status        string      `json:"status"`
+	Author        string      `json:"author"`
+	Rating        float32     `json:"rating"`
+	Genres        interface{} `json:"genres"`
+	Bookmarked    bool        `json:"bookmarked"`
+	CreatedAt     time.Time   `json:"created_at"`
+	UpdatedAt     time.Time   `json:"updated_at"`
 }
 
 func FormatNovel(novel Novel) NovelFormatter {
@@ -30,4 +47,23 @@ func FormatNovels(novels []Novel) []NovelFormatter {
 	}
 
 	return novelsFormatter
+}
+
+func FormatDetailNovel(novel Novel, genres interface{}, ChaptersCount int, Bookmarked bool) DetailNovelFormatter {
+	formatter := DetailNovelFormatter{
+		ID:            novel.ID.String(),
+		Title:         novel.Title,
+		Description:   novel.Description,
+		Bookmarked:    Bookmarked,
+		ChaptersCount: ChaptersCount,
+		CoverImage:    novel.CoverImage,
+		Status:        novel.Status,
+		Author:        novel.Author,
+		Rating:        novel.Rating,
+		Genres:        genres,
+		CreatedAt:     novel.CreatedAt,
+		UpdatedAt:     novel.UpdatedAt,
+	}
+
+	return formatter
 }

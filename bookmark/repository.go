@@ -4,8 +4,9 @@ import "gorm.io/gorm"
 
 type Repository interface {
 	Create(bookmark Bookmark) (Bookmark, error)
-	Delete(bookmarkID string) error
+	Delete(userID string, novelID string) error
 	FindByUserID(userID string) ([]Bookmark, error)
+	FindByUserAndNovelID(userID string, novelID string) (Bookmark, error)
 }
 
 type repository struct {
@@ -26,24 +27,30 @@ func (r *repository) Create(bookmark Bookmark) (Bookmark, error) {
 	return bookmark, nil
 }
 
-func (r *repository) Delete(bookmarkID string) error {
-	err := r.db.Where("id ? = ", bookmarkID).Delete(&bookmarkID).Error
-
-	if err != nil {
-		return err
-	}
-
-	return nil
+func (r *repository) Delete(userID string, novelID string) error {
+	err := r.db.Where("user_id = ? AND novel_id = ?", userID, novelID).Delete(&Bookmark{}).Error
+	return err
 }
-
 func (r *repository) FindByUserID(userID string) ([]Bookmark, error) {
 	var bookmarks []Bookmark
 
-	err := r.db.Where("user_id = ?", userID).Order("created_at DESC").Find(&bookmarks).Error
+	err := r.db.Where("user_id = ?", userID).Preload("Novel").Find(&bookmarks).Error
 
 	if err != nil {
 		return bookmarks, err
 	}
 
 	return bookmarks, nil
+}
+
+func (r *repository) FindByUserAndNovelID(userID string, novelID string) (Bookmark, error) {
+	var bookmark Bookmark
+
+	err := r.db.Where("user_id = ? AND novel_id = ?", userID, novelID).Find(&bookmark).Error
+
+	if err != nil {
+		return bookmark, err
+	}
+
+	return bookmark, nil
 }
