@@ -8,6 +8,7 @@ import (
 	"noveler_go/helper"
 	"noveler_go/novel"
 	"noveler_go/user"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -144,5 +145,40 @@ func (h *novelHandler) DetailNovel(c *gin.Context) {
 	genreFormatter := genre.FormatGenres(genreNamed)
 	formatter := novel.FormatDetailNovel(gettedNovel, genreFormatter, len(chapters), bookmarked)
 	response := helper.ApiResponse("Detail Novel Fetched SuccessFully", http.StatusOK, "success", formatter, nil)
+	c.JSON(http.StatusOK, response)
+}
+
+// API Endpoint GET /api/v1/novels/search
+func (h *novelHandler) SearchNovels(c *gin.Context) {
+	var searchInput novel.NovelSearchParametersInput
+
+	// Extract search parameters from query parameters
+	searchInput.Title = c.DefaultQuery("title", "")
+	searchInput.Status = c.DefaultQuery("status", "")
+
+	genreQueryParam := c.Query("genres")
+	if genreQueryParam != "" {
+		searchInput.Genres = []string{genreQueryParam}
+	} else {
+		searchInput.Genres = nil
+	}
+
+	// Extract pagination parameters from query string with default values
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+
+	searchInput.Page = page
+	searchInput.PageSize = pageSize
+
+	novels, err := h.novelService.SearchNovels(searchInput)
+
+	if err != nil {
+		response := helper.ApiResponse("Search Novels Failed", http.StatusInternalServerError, "error", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+
+	formatter := novel.FormatSearchNovels(novels)
+	response := helper.ApiResponse("Novels Search Successful", http.StatusOK, "success", formatter, nil)
 	c.JSON(http.StatusOK, response)
 }

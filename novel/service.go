@@ -16,6 +16,7 @@ type Service interface {
 	GetNewlyUpdatedNovel() ([]Novel, error)
 	GetSortByRateNovel() ([]Novel, error)
 	GetRandomNovel() ([]Novel, error)
+	SearchNovels(input NovelSearchParametersInput) ([]Novel, error)
 }
 
 type service struct {
@@ -131,6 +132,15 @@ func (s *service) GetSortByRateNovel() ([]Novel, error) {
 
 func (s *service) GetRandomNovel() ([]Novel, error) {
 	novels, err := s.repository.GetRandomNovel()
+	if err != nil {
+		return novels, err
+	}
+
+	return novels, nil
+}
+
+func (s *service) SearchNovels(input NovelSearchParametersInput) ([]Novel, error) {
+	novels, err := s.repository.SearchNovels(input)
 	if err != nil {
 		return novels, err
 	}

@@ -15,6 +15,7 @@ type Repository interface {
 	GetNewest() ([]Novel, error)
 	GetNewlyUpdated() ([]Novel, error)
 	GetRandomNovel() ([]Novel, error)
+	SearchNovels(params NovelSearchParametersInput) ([]Novel, error)
 }
 
 type repository struct {
@@ -120,4 +121,33 @@ func (r *repository) GetRandomNovel() ([]Novel, error) {
 	}
 
 	return randomNovels, nil
+}
+
+func (r *repository) SearchNovels(params NovelSearchParametersInput) ([]Novel, error) {
+	var novels []Novel
+
+	query := r.db.Model(&Novel{})
+
+	// Apply filters based on the provided parameters
+	if params.Title != "" {
+		query = query.Where("title ILIKE ?", "%"+params.Title+"%")
+	}
+	if params.Status != "" {
+		query = query.Where("status = ?", params.Status)
+	}
+	if len(params.Genres) > 0 {
+		for _, genreID := range params.Genres {
+			query = query.Where("genre_ids @> ARRAY[?]", genreID)
+		}
+	}
+
+	// Calculate offset for pagination
+	offset := (params.Page - 1) * params.PageSize
+	query = query.Offset(offset).Limit(params.PageSize)
+
+	if err := query.Find(&novels).Error; err != nil {
+		return nil, err
+	}
+
+	return novels, nil
 }

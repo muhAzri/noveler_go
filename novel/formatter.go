@@ -12,6 +12,15 @@ type NovelFormatter struct {
 	UpdatedAt  time.Time `json:"updated_at"`
 }
 
+type SearchNovelFormatter struct {
+	ID         string    `json:"id"`
+	Title      string    `json:"title"`
+	CoverImage string    `json:"cover_image"`
+	Rating     float32   `json:"rating"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+}
+
 type DetailNovelFormatter struct {
 	ID            string      `json:"id"`
 	Title         string      `json:"title"`
@@ -38,11 +47,36 @@ func FormatNovel(novel Novel) NovelFormatter {
 
 	return formatter
 }
+
 func FormatNovels(novels []Novel) []NovelFormatter {
 	novelsFormatter := []NovelFormatter{}
 
 	for _, novel := range novels {
 		novelFormatter := FormatNovel(novel)
+		novelsFormatter = append(novelsFormatter, novelFormatter)
+	}
+
+	return novelsFormatter
+}
+
+func FormatSearchNovel(novel Novel) SearchNovelFormatter {
+	formatter := SearchNovelFormatter{
+		ID:         novel.ID.String(),
+		Title:      novel.Title,
+		CoverImage: novel.CoverImage,
+		Rating:     novel.Rating,
+		CreatedAt:  novel.CreatedAt,
+		UpdatedAt:  novel.UpdatedAt,
+	}
+
+	return formatter
+}
+
+func FormatSearchNovels(novels []Novel) []SearchNovelFormatter {
+	novelsFormatter := []SearchNovelFormatter{}
+
+	for _, novel := range novels {
+		novelFormatter := FormatSearchNovel(novel)
 		novelsFormatter = append(novelsFormatter, novelFormatter)
 	}
 
