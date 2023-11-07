@@ -42,3 +42,17 @@ func (h *genreHandler) CreateGenre(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 
 }
+
+func (h *genreHandler) GetAllGenre(c *gin.Context) {
+	genres, err := h.service.GetAllGenres()
+
+	if err != nil {
+		response := helper.ApiResponse("Get Genre Failed", http.StatusBadRequest, "error", nil, err.Error())
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	formatter := genre.FormatGenres(genres)
+	response := helper.ApiResponse("Genre success getted", http.StatusOK, "success", formatter, nil)
+	c.JSON(http.StatusOK, response)
+}

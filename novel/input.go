@@ -13,3 +13,11 @@ type CreateNovelInput struct {
 type FindByIDInput struct {
 	ID string `uri:"id" binding:"required"`
 }
+
+type NovelSearchParametersInput struct {
+	Title    string
+	Status   string
+	Genres   []string
+	Page     int
+	PageSize int
+}

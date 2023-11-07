@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"noveler_go/genre"
 	"noveler_go/novel"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -46,6 +47,7 @@ func (h *novelHandler) New(c *gin.Context) {
 
 func (h *novelHandler) Create(c *gin.Context) {
 	var input novel.CreateNovelInput
+	input.Status = strings.ToLower(input.Status)
 
 	err := c.ShouldBind(&input)
 	if err != nil {
@@ -135,6 +137,7 @@ func (h *novelHandler) Edit(c *gin.Context) {
 func (h *novelHandler) Update(c *gin.Context) {
 	var input novel.CreateNovelInput
 	var inputID novel.FindByIDInput
+	input.Status = strings.ToLower(input.Status)
 
 	err := c.ShouldBind(&input)
 	if err != nil {

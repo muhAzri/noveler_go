@@ -86,6 +86,7 @@ func main() {
 	//API Routes
 	api := router.Group("/api/v1")
 	api.POST("/genre", genreHandler.CreateGenre)
+	api.GET("/genre", genreHandler.GetAllGenre)
 
 	//Api Discover Screen Related
 	api.GET("/novel/newest", middleware.AuthMiddleware(authService, userService), novelHandler.NewestNovel)
@@ -107,6 +108,9 @@ func main() {
 	//BOOKMARK RELATED
 	api.POST("/novel/:id/bookmark", middleware.AuthMiddleware(authService, userService), bookmarkHandler.AddOrRemoveBookmark)
 	api.GET("/bookmark", middleware.AuthMiddleware(authService, userService), bookmarkHandler.GetUserBookmarks)
+
+	//SEARCH RELATED
+	api.GET("/novel/search", middleware.AuthMiddleware(authService, userService), novelHandler.SearchNovels)
 
 	// CMS routes
 	router.GET("/", middleware.AuthAdminMiddleware(), novelAdminHandler.Index)
