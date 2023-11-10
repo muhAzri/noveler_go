@@ -8,8 +8,7 @@ import (
 )
 
 func InitializeEnvironment() error {
-	environment := os.Getenv("env")
-	err := godotenv.Load(".env." + environment)
+	err := godotenv.Load(".env")
 	if err != nil {
 		return err
 	}
