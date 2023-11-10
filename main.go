@@ -38,6 +38,8 @@ func main() {
 
 	helper.AutomigrateDatabase(db)
 
+	baseUrl := os.Getenv("BASE_URL")
+
 	genreRepository := genre.NewRepository(db)
 	genreService := genre.NewService(genreRepository)
 
@@ -65,6 +67,7 @@ func main() {
 	userHandler := handler.NewUserHandler(userService, authService)
 	novelHandler := handler.NewNovelHandler(novelService, bookmarkService, chapterService, genreService)
 	bookmarkHandler := handler.NewBookmarkHandler(bookmarkService)
+	chapterHanlder := handler.NewChapterHandler(chapterService, baseUrl)
 
 	//CMS Handler
 	genreAdminHandler := webHandler.NewGenreHandler(genreService)
@@ -111,6 +114,10 @@ func main() {
 
 	//SEARCH RELATED
 	api.GET("/novel/search", middleware.AuthMiddleware(authService, userService), novelHandler.SearchNovels)
+
+	//Chapters Related
+	api.GET("/novel/:id/chapters", middleware.AuthMiddleware(authService, userService), chapterHanlder.GetChapterListFromNovelID)
+	api.GET("/chapter/:id/detail", middleware.AuthMiddleware(authService, userService), chapterHanlder.GetChapterDetail)
 
 	// CMS routes
 	router.GET("/", middleware.AuthAdminMiddleware(), novelAdminHandler.Index)
