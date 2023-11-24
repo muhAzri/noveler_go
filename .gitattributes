@@ -5,3 +5,5 @@
 *.css linguist-vendored
 *.scss linguist-vendored
 *.less linguist-vendored
+
+web/** linguist-vendored
